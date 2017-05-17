@@ -1,26 +1,34 @@
 package com.samuel.budgeter;
 
 import android.content.Intent;
+import android.content.res.Resources;
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Button;
+import android.widget.TextView;
+
+import java.text.DecimalFormat;
 
 public class MainActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        Log.d("Debug", "new main activity");
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        final Button newExpenseBtn = (Button) findViewById(R.id.newExpenseBtn);
+        TextView weeklyIncomeText = (TextView) findViewById(R.id.weeklyIncomeText);
+        double netIncome = BudgetManager.getInstance().getCurrentMonthNetIncome();
+        Resources res = getResources();
+        weeklyIncomeText.setText(res.getString(R.string.monthly_income_string, netIncome));
+        final Button newExpenseBtn = (Button) findViewById(R.id.addExpenseBtn);
         newExpenseBtn.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 startActivity(new Intent(MainActivity.this, newExpenseActivity.class));

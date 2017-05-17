@@ -8,22 +8,8 @@
     tools:context="com.samuel.budgeter.MainActivity"
     tools:showIn="@layout/activity_main">
 
-    <Button
-        android:id="@+id/button"
-        style="@style/Widget.AppCompat.Button"
-        android:layout_width="300dp"
-        android:layout_height="66dp"
-        android:layout_alignParentBottom="true"
-        android:layout_centerHorizontal="true"
-        android:layout_marginLeft="-14dp"
-        android:layout_marginTop="20dp"
-        android:text="add income"
-        android:textSize="25dp"
-        app:layout_constraintLeft_toLeftOf="@+id/newExpenseBtn"
-        app:layout_constraintTop_toBottomOf="@+id/newExpenseBtn" />
-
     <TextView
-        android:id="@+id/textView"
+        android:id="@+id/weeklyIncomeText"
         android:layout_width="290dp"
         android:layout_height="42dp"
         android:layout_alignParentTop="true"
@@ -36,7 +22,7 @@
         app:layout_constraintVertical_bias="0.12" />
 
     <Button
-        android:id="@+id/newExpenseBtn"
+        android:id="@+id/addExpenseBtn"
         style="@style/Widget.AppCompat.Button"
         android:layout_width="300dp"
         android:layout_height="66dp"
@@ -50,7 +36,21 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textView"
-        app:layout_constraintVertical_bias="0.227" />
+        app:layout_constraintTop_toBottomOf="@+id/weeklyIncomeText"
+        app:layout_constraintVertical_bias="0.221" />
+
+    <Button
+        android:id="@+id/addIncomeBtn"
+        style="@style/Widget.AppCompat.Button"
+        android:layout_width="300dp"
+        android:layout_height="66dp"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginLeft="-14dp"
+        android:layout_marginTop="20dp"
+        android:text="add income"
+        android:textSize="25dp"
+        app:layout_constraintLeft_toLeftOf="@+id/addExpenseBtn"
+        app:layout_constraintTop_toBottomOf="@+id/addExpenseBtn" />
 
 </android.support.constraint.ConstraintLayout>
