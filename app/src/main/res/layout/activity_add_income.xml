@@ -1,0 +1,230 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="com.samuel.budgeter.AddIncomeActivity"
+    tools:layout_editor_absoluteY="81dp"
+    tools:layout_editor_absoluteX="0dp">
+
+    <TextView
+        android:id="@+id/dateTxt"
+        android:layout_width="70dp"
+        android:layout_height="wrap_content"
+        android:text="Date"
+        android:textSize="20dp"
+        app:layout_constraintTop_toTopOf="parent"
+        android:layout_marginTop="34dp"
+        android:layout_marginLeft="32dp"
+        app:layout_constraintLeft_toLeftOf="parent" />
+
+    <android.support.constraint.ConstraintLayout
+        android:id="@+id/hourlyIncomeInput"
+        android:layout_width="330dp"
+        android:layout_height="432dp"
+        android:layout_marginLeft="8dp"
+        android:layout_marginRight="8dp"
+        android:layout_marginTop="58dp"
+        android:visibility="visible"
+        app:layout_constraintHorizontal_bias="0.482"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <TextView
+            android:id="@+id/HourlyRateTxt"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="16dp"
+            android:layout_marginRight="8dp"
+            android:layout_marginTop="191dp"
+            android:text="Hourly Rate:"
+            android:textSize="20dp"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <Button
+            android:id="@+id/changeRateBtn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="11dp"
+            android:text="Change rate"
+            app:layout_constraintLeft_toLeftOf="@+id/hourlyRateVal"
+            app:layout_constraintTop_toBottomOf="@+id/hourlyRateVal" />
+
+        <EditText
+            android:id="@+id/hoursWorkedInput"
+            android:layout_width="50dp"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="8dp"
+            android:layout_marginRight="21dp"
+            android:layout_marginStart="83dp"
+            android:layout_marginTop="-7dp"
+            android:ems="10"
+            android:gravity="right"
+            android:inputType="number"
+            android:text="0"
+            android:textSize="20dp"
+            app:layout_constraintHorizontal_bias="0.782"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toLeftOf="@+id/minutesWorkedInput"
+            app:layout_constraintTop_toTopOf="@+id/minutesWorkedInput" />
+
+        <TextView
+            android:id="@+id/hoursTxt"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="0dp"
+            android:layout_marginTop="0dp"
+            android:text="h"
+            android:textSize="20dp"
+            app:layout_constraintLeft_toRightOf="@+id/hoursWorkedInput"
+            app:layout_constraintTop_toTopOf="@+id/minuteTxt" />
+
+        <EditText
+            android:id="@+id/minutesWorkedInput"
+            android:layout_width="50dp"
+            android:layout_height="wrap_content"
+            android:layout_marginRight="0dp"
+            android:layout_marginStart="83dp"
+            android:ems="10"
+            android:gravity="right"
+            android:inputType="number"
+            android:text="0"
+            android:textSize="20dp"
+            app:layout_constraintRight_toLeftOf="@+id/minuteTxt"
+            android:layout_marginTop="0dp"
+            app:layout_constraintTop_toBottomOf="@+id/hoursWorkedTxt" />
+
+        <TextView
+            android:id="@+id/minuteTxt"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="m"
+            android:textSize="20dp"
+            android:layout_marginRight="16dp"
+            app:layout_constraintRight_toRightOf="parent"
+            android:layout_marginTop="10dp"
+            app:layout_constraintTop_toBottomOf="@+id/hoursWorkedTxt" />
+
+        <TextView
+            android:id="@+id/hoursWorkedTxt"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginRight="16dp"
+            android:layout_marginTop="0dp"
+            android:text="Hours Worked:"
+            android:textSize="20dp"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/HourlyRateTxt" />
+
+        <TextView
+            android:id="@+id/hourlyRateVal"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="0dp"
+            android:text="$0.00"
+            android:textSize="20dp"
+            app:layout_constraintBaseline_toBaselineOf="@+id/hoursWorkedInput"
+            app:layout_constraintLeft_toLeftOf="@+id/HourlyRateTxt" />
+    </android.support.constraint.ConstraintLayout>
+
+    <android.support.constraint.ConstraintLayout
+        android:id="@+id/flatIncomeInput"
+        android:layout_width="365dp"
+        android:layout_height="359dp"
+        android:visibility="invisible"
+        android:layout_marginLeft="23dp"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        android:layout_marginTop="154dp"
+        android:layout_marginRight="8dp"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintHorizontal_bias="0.0">
+
+        <TextView
+            android:id="@+id/flatAmountTxt"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Amount:"
+            android:textSize="20dp"
+            android:layout_marginLeft="16dp"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            android:layout_marginTop="101dp"
+            android:layout_marginRight="8dp"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintHorizontal_bias="0.0" />
+
+        <EditText
+            android:id="@+id/flatAmountInput"
+            android:layout_width="260dp"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="0dp"
+            android:layout_marginTop="0dp"
+            android:ems="10"
+            android:imeOptions="actionDone"
+            android:inputType="numberDecimal"
+            app:layout_constraintLeft_toLeftOf="@+id/flatAmountTxt"
+            app:layout_constraintTop_toBottomOf="@+id/flatAmountTxt" />
+    </android.support.constraint.ConstraintLayout>
+
+    <EditText
+        android:id="@+id/dateInput"
+        android:layout_width="260dp"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="0dp"
+        android:layout_marginTop="0dp"
+        android:ems="10"
+        android:focusable="false"
+        android:inputType="date"
+        app:layout_constraintLeft_toLeftOf="@+id/dateTxt"
+        app:layout_constraintTop_toBottomOf="@+id/dateTxt" />
+
+    <Button
+        android:id="@+id/hourlyIncomeBtn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Hourly"
+        android:layout_marginLeft="0dp"
+        app:layout_constraintLeft_toLeftOf="@+id/incomeTypeTxt"
+        android:layout_marginTop="9dp"
+        app:layout_constraintTop_toBottomOf="@+id/incomeTypeTxt" />
+
+    <Button
+        android:id="@+id/flatIncomeBtn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Flat"
+        app:layout_constraintLeft_toRightOf="@+id/hourlyIncomeBtn"
+        android:layout_marginLeft="39dp"
+        app:layout_constraintTop_toTopOf="@+id/hourlyIncomeBtn"
+        android:layout_marginTop="0dp" />
+
+    <TextView
+        android:id="@+id/incomeTypeTxt"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Income type:"
+        android:textSize="20dp"
+        android:layout_marginLeft="0dp"
+        app:layout_constraintLeft_toLeftOf="@+id/dateInput"
+        android:layout_marginTop="21dp"
+        app:layout_constraintTop_toBottomOf="@+id/dateInput" />
+
+    <Button
+        android:id="@+id/addIncomeBtn"
+        android:layout_width="207dp"
+        android:layout_height="50dp"
+        android:layout_marginBottom="51dp"
+        android:layout_marginLeft="8dp"
+        android:layout_marginRight="8dp"
+        android:text="Add income"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent" />
+
+</android.support.constraint.ConstraintLayout>

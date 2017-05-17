@@ -40,7 +40,7 @@ public class newExpenseActivity extends AppCompatActivity {
             public void onClick(View v) {
                 String amountString = amountInput.getText().toString();
                 if(amountString.equals("")) {
-                    Toast toast = Toast.makeText(getApplicationContext(), "You must fill in the amount field.", Toast.LENGTH_SHORT);
+                    Toast toast = Toast.makeText(getApplicationContext(), "You must fill in the flatIncome field.", Toast.LENGTH_SHORT);
                     toast.show();
                     return;
                 }

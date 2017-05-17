@@ -34,6 +34,12 @@ public class MainActivity extends AppCompatActivity {
                 startActivity(new Intent(MainActivity.this, newExpenseActivity.class));
             }
         });
+        final Button addIncomeBtn = (Button) findViewById(R.id.addIncomeBtn);
+        addIncomeBtn.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                startActivity(new Intent(MainActivity.this, AddIncomeActivity.class));
+            }
+        });
     }
 
     @Override
