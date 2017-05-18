@@ -7,18 +7,18 @@
     tools:context="com.samuel.budgeter.newExpenseActivity">
 
     <TextView
-        android:id="@+id/costTxt"
-        android:layout_width="70dp"
-        android:layout_height="25dp"
+        android:id="@+id/amountTxt"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:layout_marginBottom="0dp"
         android:layout_marginLeft="0dp"
-        android:text="Cost"
+        android:text="Amount"
         android:textSize="20dp"
-        app:layout_constraintBottom_toTopOf="@+id/costInput"
-        app:layout_constraintLeft_toLeftOf="@+id/costInput" />
+        app:layout_constraintBottom_toTopOf="@+id/amountInput"
+        app:layout_constraintLeft_toLeftOf="@+id/amountInput" />
 
     <EditText
-        android:id="@+id/costInput"
+        android:id="@+id/amountInput"
         android:layout_width="293dp"
         android:layout_height="wrap_content"
         android:layout_marginBottom="8dp"
@@ -36,8 +36,8 @@
 
     <TextView
         android:id="@+id/dateTxt"
-        android:layout_width="70dp"
-        android:layout_height="25dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:layout_marginBottom="-1dp"
         android:layout_marginLeft="0dp"
         android:text="Date"
@@ -53,14 +53,14 @@
         android:layout_marginTop="38dp"
         android:ems="10"
         android:inputType="date"
-        app:layout_constraintLeft_toLeftOf="@+id/costInput"
-        app:layout_constraintTop_toBottomOf="@+id/costInput"
+        app:layout_constraintLeft_toLeftOf="@+id/amountInput"
+        app:layout_constraintTop_toBottomOf="@+id/amountInput"
         android:focusable="false"/>
 
     <TextView
         android:id="@+id/detailsTxt"
-        android:layout_width="70dp"
-        android:layout_height="25dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:layout_marginBottom="-1dp"
         android:layout_marginLeft="0dp"
         android:text="Details"
@@ -92,6 +92,7 @@
         android:layout_marginLeft="8dp"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
-        android:layout_marginBottom="-83dp" />
+        android:layout_marginBottom="45dp"
+        app:layout_constraintHorizontal_bias="0.503" />
 
 </android.support.constraint.ConstraintLayout>

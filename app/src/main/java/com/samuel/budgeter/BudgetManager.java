@@ -1,9 +1,9 @@
 package com.samuel.budgeter;
 
+import android.content.Context;
 import android.util.Log;
 
 import org.joda.time.DateTime;
-import org.joda.time.LocalDate;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -11,14 +11,16 @@ import java.util.List;
 public class BudgetManager {
     private static BudgetManager budgetManager;
     private List<MonthlyBudget> monthlyBudgets;
+    Context context;
 
-    private BudgetManager() {
+    private BudgetManager(Context context) {
         monthlyBudgets = new ArrayList<>();
+        this.context = context;
     }
 
-    public static BudgetManager getInstance() {
+    public static BudgetManager getInstance(Context context) {
         if(budgetManager == null) {
-            budgetManager = new BudgetManager();
+            budgetManager = new BudgetManager(context);
         }
         return budgetManager;
     }
@@ -28,31 +30,35 @@ public class BudgetManager {
             for(MonthlyBudget monthlyBudget: monthlyBudgets) {
                 if(monthlyBudget.containsDate(expense.getDate())) {
                     monthlyBudget.addExpense(expense);
+                    FileManager.getInstance(context).saveBudgetData();
                     return;
                 }
             }
         }
         MonthlyBudget newMonthlyBudget = addMonthlyBudget(expense.getDate());
         newMonthlyBudget.addExpense(expense);
+        FileManager.getInstance(context).saveBudgetData();
     }
 
     public void addIncome(Income income) {
         if(monthlyBudgets != null) {
             for(MonthlyBudget monthlyBudget: monthlyBudgets) {
-                if(monthlyBudget.containsDate(income.getDate())) {
+                if(monthlyBudget.containsDate(income.getDateInMillisec())) {
                     monthlyBudget.addIncome(income);
+                    FileManager.getInstance(context).saveBudgetData();
                     return;
                 }
             }
         }
-        MonthlyBudget newMonthlyBudget = addMonthlyBudget(income.getDate());
+        MonthlyBudget newMonthlyBudget = addMonthlyBudget(income.getDateInMillisec());
         newMonthlyBudget.addIncome(income);
-
+        FileManager.getInstance(context).saveBudgetData();
     }
 
-    private MonthlyBudget addMonthlyBudget(DateTime date) {
+    private MonthlyBudget addMonthlyBudget(long dateInMillisec) {
         Log.d("Debug", "making new monthly budget");
-        MonthlyBudget monthlyBudget = new MonthlyBudget(date.withDayOfMonth(1));
+        DateTime date = new DateTime(dateInMillisec);
+        MonthlyBudget monthlyBudget = new MonthlyBudget(date.withDayOfMonth(1).getMillis());
         monthlyBudgets.add(monthlyBudget);
         return monthlyBudget;
     }
@@ -60,9 +66,24 @@ public class BudgetManager {
     public double getCurrentMonthNetIncome() {
         MonthlyBudget currentMonth = MonthlyBudget.getCurrentMonth();
         if(currentMonth == null) {
-            Log.d("Debug", "null here");
             return 0;
         }
         return currentMonth.getNetIncome();
+    }
+
+    public List<Expense> getAllExpenses() {
+        List<Expense> expenses = new ArrayList<>();
+        for(MonthlyBudget monthlyBudget: monthlyBudgets) {
+            expenses.addAll(monthlyBudget.getAllExpenses());
+        }
+        return expenses;
+    }
+
+    public List<Income> getAllIncome() {
+        List<Income> incomeList = new ArrayList<>();
+        for(MonthlyBudget monthlyBudget: monthlyBudgets) {
+            incomeList.addAll(monthlyBudget.getAllIncome());
+        }
+        return incomeList;
     }
 }

@@ -5,12 +5,12 @@ import org.joda.time.LocalDate;
 
 public class Expense {
     double amount;
-    DateTime date;
+    long dateInMillisec;
     String details;
 
     public Expense(double amount, DateTime date, String details) {
         this.amount = amount;
-        this.date = date;
+        this.dateInMillisec = date.getMillis();
         this.details = details;
     }
 
@@ -18,7 +18,7 @@ public class Expense {
         return amount;
     }
 
-    public DateTime getDate() {
-        return date;
+    public long getDate() {
+        return dateInMillisec;
     }
 }

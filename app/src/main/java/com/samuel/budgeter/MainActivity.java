@@ -12,9 +12,9 @@ import android.view.MenuItem;
 import android.widget.Button;
 import android.widget.TextView;
 
-import java.text.DecimalFormat;
 
 public class MainActivity extends AppCompatActivity {
+    static boolean initialized = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -23,9 +23,14 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+        if(!initialized) {
+            FileManager.getInstance(this).initializeBudgetData();
+            FileManager.getInstance(this).initializeUserData();
+            initialized = true;
+        }
 
         TextView weeklyIncomeText = (TextView) findViewById(R.id.weeklyIncomeText);
-        double netIncome = BudgetManager.getInstance().getCurrentMonthNetIncome();
+        double netIncome = BudgetManager.getInstance(this).getCurrentMonthNetIncome();
         Resources res = getResources();
         weeklyIncomeText.setText(res.getString(R.string.monthly_income_string, netIncome));
         final Button newExpenseBtn = (Button) findViewById(R.id.addExpenseBtn);

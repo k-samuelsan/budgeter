@@ -4,7 +4,6 @@ import android.util.Log;
 
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeConstants;
-import org.joda.time.LocalDate;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -12,12 +11,13 @@ import java.util.List;
 public class MonthlyBudget {
 
     private static MonthlyBudget currentMonth;
-    DateTime startOfMonth;
+    long startOfMonthInMillisec;
     List<WeeklyBudget> weeklyBudgetList;
 
-    public MonthlyBudget(DateTime startOfMonth) {
-        this.startOfMonth = startOfMonth;
-        if(currentMonth == null || startOfMonth.isAfter(currentMonth.startOfMonth)) {
+    public MonthlyBudget(long startOfMonthInMillisec) {
+        this.startOfMonthInMillisec = startOfMonthInMillisec;
+        DateTime startOfMonth = new DateTime(startOfMonthInMillisec);
+        if(currentMonth == null || startOfMonth.isAfter(new DateTime(currentMonth.startOfMonthInMillisec))) {
             Log.d("Test", "hi");
             currentMonth = this;
         }
@@ -40,10 +40,11 @@ public class MonthlyBudget {
     }
 
     public void addIncome(Income income) {
-        getWeeklyBudget(income.getDate()).addIncome(income);
+        getWeeklyBudget(income.getDateInMillisec()).addIncome(income);
     }
 
-    private WeeklyBudget getWeeklyBudget(DateTime date) {
+    private WeeklyBudget getWeeklyBudget(long dateInMillisec) {
+        DateTime date = new DateTime(dateInMillisec);
         for(int i = 1; i < weeklyBudgetList.size(); i++) {
             if(date.isBefore(weeklyBudgetList.get(i).getStartOfWeek())) {
                 return weeklyBudgetList.get(i-1);
@@ -64,12 +65,34 @@ public class MonthlyBudget {
         return totalIncome;
     }
 
-    public boolean containsDate(DateTime date) {
+    public boolean containsDate(long dateInMillisec) {
+        DateTime date = new DateTime(dateInMillisec);
+        DateTime startOfMonth = new DateTime(startOfMonthInMillisec);
         return (date.isAfter(startOfMonth) && date.isBefore(startOfMonth.plusMonths(1)));
     }
 
     public static MonthlyBudget getCurrentMonth() {
         return currentMonth;
+    }
+
+    public List<Expense> getAllExpenses() {
+        List<Expense> budgets = new ArrayList<>();
+        for(WeeklyBudget weeklyBudget: weeklyBudgetList) {
+            if(weeklyBudget.hasExpenses()) {
+                budgets.addAll(weeklyBudget.getExpenses());
+            }
+        }
+        return budgets;
+    }
+
+    public List<Income> getAllIncome() {
+        List<Income> incomeList = new ArrayList<>();
+        for(WeeklyBudget weeklyBudget: weeklyBudgetList) {
+            if(weeklyBudget.hasIncome()) {
+                incomeList.addAll(weeklyBudget.getIncomeList());
+            }
+        }
+        return incomeList;
     }
 
 }
