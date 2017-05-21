@@ -19,7 +19,7 @@ import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
 import java.util.Calendar;
 
-public class newExpenseActivity extends AppCompatActivity {
+public class AddExpenseActivity extends AppCompatActivity {
     EditText amountInput;
     EditText dateInput;
     EditText detailsInput;

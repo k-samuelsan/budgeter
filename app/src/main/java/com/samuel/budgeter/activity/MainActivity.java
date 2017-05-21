@@ -1,7 +1,6 @@
 package com.samuel.budgeter.activity;
 
 import android.content.Intent;
-import android.content.res.Resources;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
@@ -43,7 +42,7 @@ public class MainActivity extends AppCompatActivity implements Observer {
         final Button newExpenseBtn = (Button) findViewById(R.id.addExpenseBtn);
         newExpenseBtn.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-                startActivity(new Intent(MainActivity.this, newExpenseActivity.class));
+                startActivity(new Intent(MainActivity.this, AddExpenseActivity.class));
             }
         });
         final Button addIncomeBtn = (Button) findViewById(R.id.addIncomeBtn);
