@@ -30,18 +30,18 @@ public class WeeklyBudget {
     }
 
     public double getNetIncome() {
-        Log.d("Income", "week " + startOfWeek);
+//        Log.d("Income", "week " + startOfWeek);
         double totalIncome = 0;
         for(Income income: incomeList) {
             totalIncome += income.getAmount();
         }
-        Log.d("Income", "total income " + totalIncome);
+//        Log.d("Income", "total income " + totalIncome);
         double totalExpenses = 0;
         for(Expense expense: expenses) {
             totalExpenses += expense.getAmount();
         }
-        Log.d("Income", "total expenses " + totalExpenses);
-        Log.d("Income", "net " + (totalIncome - totalExpenses));
+//        Log.d("Income", "total expenses " + totalExpenses);
+//        Log.d("Income", "net " + (totalIncome - totalExpenses));
         return totalIncome - totalExpenses;
     }
 
@@ -60,7 +60,7 @@ public class WeeklyBudget {
     List<Expense> getExpenses() {
         return expenses;
     }
-    List<Income> getIncomeList() {
+    List<Income> getIncome() {
         return incomeList;
     }
 

@@ -12,9 +12,12 @@ import android.view.MenuItem;
 import android.widget.Button;
 import android.widget.TextView;
 
+import com.samuel.budgeter.core.Expense;
 import com.samuel.budgeter.managers.BudgetManager;
 import com.samuel.budgeter.managers.FileManager;
 import com.samuel.budgeter.R;
+
+import org.joda.time.DateTime;
 
 import java.util.Observable;
 import java.util.Observer;
@@ -39,6 +42,11 @@ public class MainActivity extends AppCompatActivity implements Observer {
         budgetManager = BudgetManager.getInstance();
         budgetManager.addObserver(this);
         updateNetIncome();
+//        for(int i = 0; i < 5000; i++) {
+//            BudgetManager.getInstance().addExpense(new Expense(50, DateTime.now(), ""));
+//            Log.d("Stress", "index " + i);
+//        }
+        FileManager.getInstance().saveBudgetData(this);
         final Button newExpenseBtn = (Button) findViewById(R.id.addExpenseBtn);
         newExpenseBtn.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {

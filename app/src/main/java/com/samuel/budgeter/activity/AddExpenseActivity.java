@@ -51,8 +51,7 @@ public class AddExpenseActivity extends AppCompatActivity {
                     toast.show();
                 } else {
                     Expense expense = new Expense(amount, date, details);
-                    BudgetManager.getInstance().addExpense(expense);
-                    FileManager.getInstance().saveBudgetData(context);
+                    BudgetManager.getInstance().addExpense(expense, context);
                     Toast toast = Toast.makeText(getApplicationContext(), "Added expense with amount $" + String.format("%.2f",amount) + ".", Toast.LENGTH_SHORT);
                     toast.show();
                     finish();

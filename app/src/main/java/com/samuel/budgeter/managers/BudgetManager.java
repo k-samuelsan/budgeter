@@ -1,11 +1,14 @@
 package com.samuel.budgeter.managers;
 import java.util.Observable;
+
+import android.content.Context;
 import android.util.Log;
 
 import com.samuel.budgeter.core.Expense;
 import com.samuel.budgeter.core.Income;
 import com.samuel.budgeter.core.MonthlyBudget;
 import com.samuel.budgeter.core.WeeklyBudget;
+import com.samuel.budgeter.core.YearlyBudget;
 
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeConstants;
@@ -14,19 +17,21 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class BudgetManager extends Observable {
+    private static final DateTime NOW = new DateTime().withTime(0,0,0,0);
+    private static final DateTime START_OF_CURRENT_YEAR = NOW.withDayOfYear(1);
+    private static final DateTime START_OF_CURRENT_MONTH = NOW.withDayOfMonth(1);
+    private static final DateTime START_OF_CURRENT_WEEK = NOW.withDayOfWeek(DateTimeConstants.MONDAY);
     private static BudgetManager budgetManager;
-    private List<MonthlyBudget> monthlyBudgets;
+    private YearlyBudget loadedYear;
 
     private BudgetManager() {
-        monthlyBudgets = new ArrayList<>();
-        DateTime now = new DateTime().withTime(0,0,0,0);
-        long startOfMonthInMillisec = now.withDayOfMonth(1).getMillis();
-        long startOfWeekInMillisec = now.withDayOfWeek(DateTimeConstants.MONDAY).getMillis();
-        MonthlyBudget thisMonth = new MonthlyBudget(startOfMonthInMillisec);
-        WeeklyBudget thisWeek = thisMonth.getWeekForDate(startOfWeekInMillisec);
+        YearlyBudget thisYear = new YearlyBudget(START_OF_CURRENT_YEAR);
+        MonthlyBudget thisMonth = thisYear.getMonthForDate(START_OF_CURRENT_MONTH);
+        WeeklyBudget thisWeek = thisMonth.getWeekForDate(START_OF_CURRENT_WEEK);
+        YearlyBudget.setCurrentYear(thisYear);
         MonthlyBudget.setCurrentMonth(thisMonth);
         WeeklyBudget.setCurrentWeek(thisWeek);
-        monthlyBudgets.add(thisMonth);
+        loadedYear = thisYear;
     }
 
     public static BudgetManager getInstance() {
@@ -36,46 +41,30 @@ public class BudgetManager extends Observable {
         return budgetManager;
     }
 
-    public void addExpense(Expense expense) {
-        if(monthlyBudgets != null) {
-            for(MonthlyBudget monthlyBudget: monthlyBudgets) {
-                if(monthlyBudget.containsDate(expense.getDate())) {
-                    monthlyBudget.addExpense(expense);
-                    setChanged();
-                    notifyObservers();
-                    return;
-                }
-            }
+    public void addExpense(Expense expense, Context context) {
+        if(!loadedYear.containsDate(expense.getDateInMillis())) {
+            Log.d("SWITCH", "switching years: " + new DateTime(expense.getDateInMillis()));
+            DateTime startOfNewYear = new DateTime(expense.getDateInMillis()).withDayOfYear(1).withTime(0,0,0,0);
+            FileManager.getInstance().loadYear(startOfNewYear, context);
         }
-        MonthlyBudget newMonthlyBudget = addMonthlyBudget(expense.getDate());
-        newMonthlyBudget.addExpense(expense);
+        loadedYear.addExpense(expense);
         setChanged();
         notifyObservers();
+        if(context != null) {
+            FileManager.getInstance().saveBudgetData(context);
+        }
     }
 
-    public void addIncome(Income income) {
-        if(monthlyBudgets != null) {
-            for(MonthlyBudget monthlyBudget: monthlyBudgets) {
-                if(monthlyBudget.containsDate(income.getDateInMillis())) {
-                    monthlyBudget.addIncome(income);
-                    setChanged();
-                    notifyObservers();
-                    return;
-                }
-            }
+    public void addIncome(Income income, Context context) {
+        if(!loadedYear.containsDate(income.getDateInMillis())) {
+            FileManager.getInstance().loadYear(new DateTime(income.getDateInMillis()), context);
         }
-        MonthlyBudget newMonthlyBudget = addMonthlyBudget(income.getDateInMillis());
-        newMonthlyBudget.addIncome(income);
+        loadedYear.addIncome(income);
         setChanged();
         notifyObservers();
-    }
-
-    private MonthlyBudget addMonthlyBudget(long dateInMillisec) {
-        Log.d("Debug", "making new monthly budget");
-        DateTime date = new DateTime(dateInMillisec);
-        MonthlyBudget monthlyBudget = new MonthlyBudget(date.withDayOfMonth(1).getMillis());
-        monthlyBudgets.add(monthlyBudget);
-        return monthlyBudget;
+        if(context != null) {
+            FileManager.getInstance().saveBudgetData(context);
+        }
     }
 
     public double getCurrentMonthNetIncome() {
@@ -96,17 +85,28 @@ public class BudgetManager extends Observable {
 
     List<Expense> getAllExpenses() {
         List<Expense> expenses = new ArrayList<>();
-        for(MonthlyBudget monthlyBudget: monthlyBudgets) {
-            expenses.addAll(monthlyBudget.getAllExpenses());
-        }
+        expenses.addAll(loadedYear.getExpenses());
         return expenses;
     }
 
     List<Income> getAllIncome() {
         List<Income> incomeList = new ArrayList<>();
-        for(MonthlyBudget monthlyBudget: monthlyBudgets) {
-            incomeList.addAll(monthlyBudget.getAllIncome());
-        }
+        incomeList.addAll(loadedYear.getIncome());
         return incomeList;
+    }
+
+    long getStartOfLoadedYearInMillis() {
+        return loadedYear.getStartOfYear().getMillis();
+    }
+
+    void setLoadedYear(YearlyBudget yearlyBudget) {
+        this.loadedYear = yearlyBudget;
+        if(loadedYear.getStartOfYear().isEqual(START_OF_CURRENT_YEAR)) {
+            MonthlyBudget thisMonth = loadedYear.getMonthForDate(START_OF_CURRENT_MONTH);
+            WeeklyBudget thisWeek = thisMonth.getWeekForDate(START_OF_CURRENT_WEEK);
+            YearlyBudget.setCurrentYear(loadedYear);
+            MonthlyBudget.setCurrentMonth(thisMonth);
+            WeeklyBudget.setCurrentWeek(thisWeek);
+        }
     }
 }

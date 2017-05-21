@@ -11,12 +11,11 @@ import java.util.List;
 public class MonthlyBudget {
 
     private static MonthlyBudget currentMonth;
-    private long startOfMonthInMillis;
+    private DateTime startOfMonth;
     private List<WeeklyBudget> weeklyBudgetList;
 
-    public MonthlyBudget(long startOfMonthInMillis) {
-        this.startOfMonthInMillis = startOfMonthInMillis;
-        DateTime startOfMonth = new DateTime(startOfMonthInMillis);
+    public MonthlyBudget(DateTime startOfMonth) {
+        this.startOfMonth = startOfMonth;
         weeklyBudgetList = new ArrayList<>();
         DateTime dateIterator = startOfMonth;
         DateTime endOfMonth = startOfMonth.dayOfMonth().withMaximumValue();
@@ -32,15 +31,16 @@ public class MonthlyBudget {
     }
 
     public void addExpense(Expense expense) {
-        getWeekForDate(expense.getDate()).addExpense(expense);
+        DateTime date = new DateTime(expense.getDateInMillis());
+        getWeekForDate(date).addExpense(expense);
     }
 
     public void addIncome(Income income) {
-        getWeekForDate(income.getDateInMillis()).addIncome(income);
+        DateTime date = new DateTime(income.getDateInMillis());
+        getWeekForDate(date).addIncome(income);
     }
 
-    public WeeklyBudget getWeekForDate(long dateInMillis) {
-        DateTime date = new DateTime(dateInMillis);
+    public WeeklyBudget getWeekForDate(DateTime date) {
         for(int i = 1; i < weeklyBudgetList.size(); i++) {
             if(date.isBefore(weeklyBudgetList.get(i).getStartOfWeek())) {
                 Log.d("Before", date + " is before " + weeklyBudgetList.get(i).getStartOfWeek());
@@ -64,7 +64,7 @@ public class MonthlyBudget {
 
     public boolean containsDate(long dateInMillis) {
         DateTime date = new DateTime(dateInMillis);
-        DateTime startOfMonth = new DateTime(startOfMonthInMillis);
+        DateTime startOfMonth = new DateTime(this.startOfMonth);
         return (date.isAfter(startOfMonth) && date.isBefore(startOfMonth.plusMonths(1)));
     }
 
@@ -76,7 +76,7 @@ public class MonthlyBudget {
         return currentMonth;
     }
 
-    public List<Expense> getAllExpenses() {
+    public List<Expense> getExpenses() {
         List<Expense> budgets = new ArrayList<>();
         for(WeeklyBudget weeklyBudget: weeklyBudgetList) {
             if(weeklyBudget.hasExpenses()) {
@@ -86,14 +86,36 @@ public class MonthlyBudget {
         return budgets;
     }
 
-    public List<Income> getAllIncome() {
+    public List<Income> getIncome() {
         List<Income> incomeList = new ArrayList<>();
         for(WeeklyBudget weeklyBudget: weeklyBudgetList) {
             if(weeklyBudget.hasIncome()) {
-                incomeList.addAll(weeklyBudget.getIncomeList());
+                incomeList.addAll(weeklyBudget.getIncome());
             }
         }
         return incomeList;
+    }
+
+    DateTime getStartOfMonth() {
+        return startOfMonth;
+    }
+
+    boolean hasExpenses() {
+        for(WeeklyBudget weeklyBudget: weeklyBudgetList) {
+            if(weeklyBudget.hasExpenses()) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    boolean hasIncome() {
+        for(WeeklyBudget weeklyBudget: weeklyBudgetList) {
+            if(weeklyBudget.hasIncome()) {
+                return true;
+            }
+        }
+        return false;
     }
 
 }

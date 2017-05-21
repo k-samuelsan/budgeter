@@ -146,8 +146,7 @@ public class AddIncomeActivity extends AppCompatActivity {
                     }
                     amount = Double.parseDouble(amountString);
                 }
-                BudgetManager.getInstance().addIncome(new Income(amount, date));
-                FileManager.getInstance().saveBudgetData(context);
+                BudgetManager.getInstance().addIncome(new Income(amount, date), context);
                 Toast toast = Toast.makeText(getApplicationContext(), "Added income with amount $" + String.format("%.2f",amount) + ".", Toast.LENGTH_SHORT);
                 toast.show();
                 finish();
