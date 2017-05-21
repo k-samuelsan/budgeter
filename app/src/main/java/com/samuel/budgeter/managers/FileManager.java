@@ -1,9 +1,11 @@
-package com.samuel.budgeter;
+package com.samuel.budgeter.managers;
 
 import android.content.Context;
 import android.util.Log;
 
 import com.google.gson.Gson;
+import com.samuel.budgeter.core.Expense;
+import com.samuel.budgeter.core.Income;
 
 import java.io.BufferedReader;
 import java.io.FileInputStream;
@@ -16,23 +18,18 @@ public class FileManager {
     private static FileManager fileManager;
     private static final String budgetDataFileName = "budget-data";
     private static final String userDataFileName = "user-data";
-    private Context context;
 
-    private FileManager(Context context) {
-        this.context = context;
-    }
-
-    public static FileManager getInstance(Context context) {
+    public static FileManager getInstance() {
         if (fileManager == null) {
-            fileManager = new FileManager(context);
+            fileManager = new FileManager();
         }
         return fileManager;
     }
 
-    public void saveBudgetData() {
+    public void saveBudgetData(Context context) {
         try {
-            List<Expense> expenses = BudgetManager.getInstance(context).getAllExpenses();
-            List<Income> incomeList = BudgetManager.getInstance(context).getAllIncome();
+            List<Expense> expenses = BudgetManager.getInstance().getAllExpenses();
+            List<Income> incomeList = BudgetManager.getInstance().getAllIncome();
             BudgetObject budgetObject = new BudgetObject(expenses, incomeList);
             final Gson gson = new Gson();
             String jsonString = gson.toJson(budgetObject) + "\n";
@@ -46,9 +43,9 @@ public class FileManager {
         }
     }
 
-    public void saveUserData() {
+    public void saveUserData(Context context) {
         try {
-            UserDataManager userDataManager = UserDataManager.getInstance(context);
+            UserDataManager userDataManager = UserDataManager.getInstance();
             final Gson gson = new Gson();
             String jsonString = gson.toJson(userDataManager, UserDataManager.class) + "\n";
             FileOutputStream outputStream = context.openFileOutput(userDataFileName, Context.MODE_PRIVATE);
@@ -58,7 +55,7 @@ public class FileManager {
         }
     }
 
-    public void initializeUserData() {
+    public void initializeUserData(Context context) {
         StringBuilder stringBuilder = new StringBuilder();
         try {
             FileInputStream inputStream = context.openFileInput(userDataFileName);
@@ -78,7 +75,7 @@ public class FileManager {
         UserDataManager.setInstance(gson.fromJson(stringBuilder.toString(), UserDataManager.class));
     }
 
-    public void initializeBudgetData() {
+    public void initializeBudgetData(Context context) {
         StringBuilder stringBuilder = new StringBuilder();
         try {
             FileInputStream inputStream = context.openFileInput(budgetDataFileName);
@@ -101,10 +98,10 @@ public class FileManager {
             return;
         }
         for(Expense expense: budgetObject.expenses) {
-            BudgetManager.getInstance(context).addExpense(expense);
+            BudgetManager.getInstance().addExpense(expense);
         }
         for(Income income: budgetObject.incomeList) {
-            BudgetManager.getInstance(context).addIncome(income);
+            BudgetManager.getInstance().addIncome(income);
         }
         Log.d("NET" , "" + budgetObject.toString());
     }

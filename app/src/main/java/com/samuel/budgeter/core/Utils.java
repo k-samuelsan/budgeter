@@ -1,4 +1,4 @@
-package com.samuel.budgeter;
+package com.samuel.budgeter.core;
 
 
 import android.app.DatePickerDialog;

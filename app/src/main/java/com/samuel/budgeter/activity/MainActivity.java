@@ -1,7 +1,8 @@
-package com.samuel.budgeter;
+package com.samuel.budgeter.activity;
 
 import android.content.Intent;
 import android.content.res.Resources;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -12,9 +13,17 @@ import android.view.MenuItem;
 import android.widget.Button;
 import android.widget.TextView;
 
+import com.samuel.budgeter.managers.BudgetManager;
+import com.samuel.budgeter.managers.FileManager;
+import com.samuel.budgeter.R;
 
-public class MainActivity extends AppCompatActivity {
+import java.util.Observable;
+import java.util.Observer;
+
+
+public class MainActivity extends AppCompatActivity implements Observer {
     static boolean initialized = false;
+    BudgetManager budgetManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -24,15 +33,13 @@ public class MainActivity extends AppCompatActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         if(!initialized) {
-            FileManager.getInstance(this).initializeBudgetData();
-            FileManager.getInstance(this).initializeUserData();
+            FileManager.getInstance().initializeBudgetData(this);
+            FileManager.getInstance().initializeUserData(this);
             initialized = true;
         }
-
-        TextView weeklyIncomeText = (TextView) findViewById(R.id.weeklyIncomeText);
-        double netIncome = BudgetManager.getInstance(this).getCurrentMonthNetIncome();
-        Resources res = getResources();
-        weeklyIncomeText.setText(res.getString(R.string.monthly_income_string, netIncome));
+        budgetManager = BudgetManager.getInstance();
+        budgetManager.addObserver(this);
+        updateNetIncome();
         final Button newExpenseBtn = (Button) findViewById(R.id.addExpenseBtn);
         newExpenseBtn.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
@@ -45,6 +52,26 @@ public class MainActivity extends AppCompatActivity {
                 startActivity(new Intent(MainActivity.this, AddIncomeActivity.class));
             }
         });
+    }
+
+    private void updateNetIncome() {
+        TextView monthlyIncomeValueTxt = (TextView) findViewById(R.id.monthlyIncomeValueTxt);
+        TextView weeklyIncomeValueTxt = (TextView) findViewById(R.id.weeklyIncomeValueTxt);
+        double netMonthly = budgetManager.getCurrentMonthNetIncome();
+        double netWeekly = budgetManager.getCurrentWeekNetIncome();
+        final int POSITIVE_BUDGET_GREEN = Color.rgb(0, 0x8d, 0);
+        monthlyIncomeValueTxt.setText("$" + String.format("%.2f", netMonthly));
+        if(netMonthly >= 0) {
+            monthlyIncomeValueTxt.setTextColor(POSITIVE_BUDGET_GREEN);
+        } else {
+            monthlyIncomeValueTxt.setTextColor(Color.RED);
+        }
+        weeklyIncomeValueTxt.setText("$" + String.format("%.2f", netWeekly));
+        if(netWeekly >= 0) {
+            weeklyIncomeValueTxt.setTextColor(POSITIVE_BUDGET_GREEN);
+        } else {
+            weeklyIncomeValueTxt.setTextColor(Color.RED);
+        }
     }
 
     @Override
@@ -67,5 +94,11 @@ public class MainActivity extends AppCompatActivity {
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public void update(Observable o, Object arg) {
+        Log.d("updated", "updated");
+        updateNetIncome();
     }
 }

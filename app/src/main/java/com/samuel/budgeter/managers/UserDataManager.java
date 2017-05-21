@@ -1,35 +1,30 @@
-package com.samuel.budgeter;
+package com.samuel.budgeter.managers;
 
-
-import android.content.Context;
 
 public class UserDataManager {
     private static UserDataManager userDataManager;
     private double hourlyRate;
-    private Context context;
 
-    private UserDataManager(Context context) {
+    private UserDataManager() {
         hourlyRate = 0;
-        this.context = context;
     }
 
-    static UserDataManager getInstance(Context context) {
+    public static UserDataManager getInstance() {
         if(userDataManager == null) {
-            userDataManager = new UserDataManager(context);
+            userDataManager = new UserDataManager();
         }
         return userDataManager;
     }
 
     public void setHourlyRate (double newRate) {
         hourlyRate = newRate;
-        FileManager.getInstance(context).saveUserData();
     }
 
     public double getHourlyRate () {
         return hourlyRate;
     }
 
-    public static void setInstance(UserDataManager source) {
+    static void setInstance(UserDataManager source) {
         userDataManager = source;
     }
 }

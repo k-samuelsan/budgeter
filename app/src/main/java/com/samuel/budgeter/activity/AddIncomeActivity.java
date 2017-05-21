@@ -1,4 +1,4 @@
-package com.samuel.budgeter;
+package com.samuel.budgeter.activity;
 
 import android.content.Context;
 import android.content.DialogInterface;
@@ -8,7 +8,6 @@ import android.support.constraint.ConstraintLayout;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.text.Editable;
 import android.text.InputType;
 import android.util.Log;
 import android.view.View;
@@ -17,8 +16,14 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.samuel.budgeter.managers.BudgetManager;
+import com.samuel.budgeter.managers.FileManager;
+import com.samuel.budgeter.core.Income;
+import com.samuel.budgeter.R;
+import com.samuel.budgeter.managers.UserDataManager;
+import com.samuel.budgeter.core.Utils;
+
 import org.joda.time.DateTime;
-import org.w3c.dom.Text;
 
 import java.util.Calendar;
 
@@ -43,7 +48,7 @@ public class AddIncomeActivity extends AppCompatActivity {
         final ConstraintLayout flatIncomeInput = (ConstraintLayout) findViewById(R.id.flatIncomeInput);
 
         final Button hourlyIncomeBtn = (Button) findViewById(R.id.hourlyIncomeBtn);
-        updateHourlyRate(UserDataManager.getInstance(context).getHourlyRate());
+        updateHourlyRate(UserDataManager.getInstance().getHourlyRate());
         final Button flatIncomeBtn = (Button) findViewById(R.id.flatIncomeBtn);
         hourlyIncomeBtn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -85,9 +90,9 @@ public class AddIncomeActivity extends AppCompatActivity {
                             return;
                         }
                         Double hourlyRate = Double.parseDouble(hourlyRateString);
-                        UserDataManager.getInstance(context).setHourlyRate(hourlyRate);
+                        UserDataManager.getInstance().setHourlyRate(hourlyRate);
                         updateHourlyRate(hourlyRate);
-                        FileManager.getInstance(context).saveUserData();
+                        FileManager.getInstance().saveUserData(context);
                         dialog.dismiss();
                     }
                 });
@@ -123,13 +128,14 @@ public class AddIncomeActivity extends AppCompatActivity {
                     }
                     int hoursWorked = Integer.parseInt(hoursWorkedString);
                     int minutesWorked = Integer.parseInt(minutesWorkedString);
-                    double timeWorked = hoursWorked + (double)(minutesWorked / 60 * 100);
+                    double timeWorked = hoursWorked + ((double)minutesWorked / 60);
+                    Log.d("worked", "hours worked " + hoursWorked + " minutes " + minutesWorked + " total " + timeWorked);
                     if(timeWorked <= 0) {
                         Toast toast = Toast.makeText(getApplicationContext(), "You must have at least 1m to log hourly income.", Toast.LENGTH_SHORT);
                         toast.show();
                         return;
                     }
-                    amount = UserDataManager.getInstance(context).getHourlyRate()*timeWorked;
+                    amount = UserDataManager.getInstance().getHourlyRate()*timeWorked;
 
                 } else if (currentIncomeType.equals(FLAT)) {
                     String amountString = amountInput.getText().toString();
@@ -140,9 +146,11 @@ public class AddIncomeActivity extends AppCompatActivity {
                     }
                     amount = Double.parseDouble(amountString);
                 }
-                BudgetManager.getInstance(context).addIncome(new Income(amount, date));
-                startActivity(new Intent(AddIncomeActivity.this, MainActivity.class));
-                Log.d("TEST", "helloooo");
+                BudgetManager.getInstance().addIncome(new Income(amount, date));
+                FileManager.getInstance().saveBudgetData(context);
+                Toast toast = Toast.makeText(getApplicationContext(), "Added income with amount $" + String.format("%.2f",amount) + ".", Toast.LENGTH_SHORT);
+                toast.show();
+                finish();
             }
         });
     }

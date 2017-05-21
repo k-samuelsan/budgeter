@@ -1,26 +1,37 @@
-package com.samuel.budgeter;
-
-import android.content.Context;
+package com.samuel.budgeter.managers;
+import java.util.Observable;
 import android.util.Log;
 
+import com.samuel.budgeter.core.Expense;
+import com.samuel.budgeter.core.Income;
+import com.samuel.budgeter.core.MonthlyBudget;
+import com.samuel.budgeter.core.WeeklyBudget;
+
 import org.joda.time.DateTime;
+import org.joda.time.DateTimeConstants;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class BudgetManager {
+public class BudgetManager extends Observable {
     private static BudgetManager budgetManager;
     private List<MonthlyBudget> monthlyBudgets;
-    Context context;
 
-    private BudgetManager(Context context) {
+    private BudgetManager() {
         monthlyBudgets = new ArrayList<>();
-        this.context = context;
+        DateTime now = new DateTime().withTime(0,0,0,0);
+        long startOfMonthInMillisec = now.withDayOfMonth(1).getMillis();
+        long startOfWeekInMillisec = now.withDayOfWeek(DateTimeConstants.MONDAY).getMillis();
+        MonthlyBudget thisMonth = new MonthlyBudget(startOfMonthInMillisec);
+        WeeklyBudget thisWeek = thisMonth.getWeekForDate(startOfWeekInMillisec);
+        MonthlyBudget.setCurrentMonth(thisMonth);
+        WeeklyBudget.setCurrentWeek(thisWeek);
+        monthlyBudgets.add(thisMonth);
     }
 
-    public static BudgetManager getInstance(Context context) {
+    public static BudgetManager getInstance() {
         if(budgetManager == null) {
-            budgetManager = new BudgetManager(context);
+            budgetManager = new BudgetManager();
         }
         return budgetManager;
     }
@@ -30,29 +41,33 @@ public class BudgetManager {
             for(MonthlyBudget monthlyBudget: monthlyBudgets) {
                 if(monthlyBudget.containsDate(expense.getDate())) {
                     monthlyBudget.addExpense(expense);
-                    FileManager.getInstance(context).saveBudgetData();
+                    setChanged();
+                    notifyObservers();
                     return;
                 }
             }
         }
         MonthlyBudget newMonthlyBudget = addMonthlyBudget(expense.getDate());
         newMonthlyBudget.addExpense(expense);
-        FileManager.getInstance(context).saveBudgetData();
+        setChanged();
+        notifyObservers();
     }
 
     public void addIncome(Income income) {
         if(monthlyBudgets != null) {
             for(MonthlyBudget monthlyBudget: monthlyBudgets) {
-                if(monthlyBudget.containsDate(income.getDateInMillisec())) {
+                if(monthlyBudget.containsDate(income.getDateInMillis())) {
                     monthlyBudget.addIncome(income);
-                    FileManager.getInstance(context).saveBudgetData();
+                    setChanged();
+                    notifyObservers();
                     return;
                 }
             }
         }
-        MonthlyBudget newMonthlyBudget = addMonthlyBudget(income.getDateInMillisec());
+        MonthlyBudget newMonthlyBudget = addMonthlyBudget(income.getDateInMillis());
         newMonthlyBudget.addIncome(income);
-        FileManager.getInstance(context).saveBudgetData();
+        setChanged();
+        notifyObservers();
     }
 
     private MonthlyBudget addMonthlyBudget(long dateInMillisec) {
@@ -71,7 +86,15 @@ public class BudgetManager {
         return currentMonth.getNetIncome();
     }
 
-    public List<Expense> getAllExpenses() {
+    public double getCurrentWeekNetIncome() {
+        WeeklyBudget currentWeek = WeeklyBudget.getCurrentWeek();
+        if(currentWeek == null) {
+            return 0;
+        }
+        return currentWeek.getNetIncome();
+    }
+
+    List<Expense> getAllExpenses() {
         List<Expense> expenses = new ArrayList<>();
         for(MonthlyBudget monthlyBudget: monthlyBudgets) {
             expenses.addAll(monthlyBudget.getAllExpenses());
@@ -79,7 +102,7 @@ public class BudgetManager {
         return expenses;
     }
 
-    public List<Income> getAllIncome() {
+    List<Income> getAllIncome() {
         List<Income> incomeList = new ArrayList<>();
         for(MonthlyBudget monthlyBudget: monthlyBudgets) {
             incomeList.addAll(monthlyBudget.getAllIncome());

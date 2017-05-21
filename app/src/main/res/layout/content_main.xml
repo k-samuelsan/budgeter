@@ -5,21 +5,30 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
-    tools:context="com.samuel.budgeter.MainActivity"
+    tools:context="com.samuel.budgeter.activity.MainActivity"
     tools:showIn="@layout/activity_main">
 
     <TextView
-        android:id="@+id/weeklyIncomeText"
-        android:layout_width="290dp"
-        android:layout_height="42dp"
+        android:id="@+id/monthlyIncomeText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:layout_alignParentTop="true"
         android:layout_centerHorizontal="true"
-        android:text="Hello World!"
-        app:layout_constraintBottom_toBottomOf="parent"
+        android:layout_marginLeft="30dp"
+        android:layout_marginTop="56dp"
+        android:text="@string/monthly_income_string"
         app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.12" />
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/weeklyIncomeText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="0dp"
+        android:layout_marginTop="11dp"
+        android:text="@string/weekly_income_string"
+        app:layout_constraintLeft_toLeftOf="@+id/monthlyIncomeText"
+        app:layout_constraintTop_toBottomOf="@+id/monthlyIncomeText" />
 
     <Button
         android:id="@+id/addExpenseBtn"
@@ -36,7 +45,7 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/weeklyIncomeText"
+        app:layout_constraintTop_toBottomOf="@+id/monthlyIncomeText"
         app:layout_constraintVertical_bias="0.221" />
 
     <Button
@@ -52,5 +61,30 @@
         android:textSize="25dp"
         app:layout_constraintLeft_toLeftOf="@+id/addExpenseBtn"
         app:layout_constraintTop_toBottomOf="@+id/addExpenseBtn" />
+
+    <TextView
+        android:id="@+id/monthlyIncomeValueTxt"
+        android:layout_width="121dp"
+        android:layout_height="wrap_content"
+        android:layout_marginRight="30dp"
+        android:layout_marginTop="0dp"
+        android:text="TextView"
+        android:gravity="right"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/monthlyIncomeText"
+        tools:layout_editor_absoluteX="209dp"
+        tools:layout_editor_absoluteY="55dp" />
+
+    <TextView
+        android:id="@+id/weeklyIncomeValueTxt"
+        android:layout_width="119dp"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="0dp"
+        android:layout_marginTop="0dp"
+        android:text="TextView"
+        android:gravity="right"
+        app:layout_constraintLeft_toLeftOf="@+id/monthlyIncomeValueTxt"
+        app:layout_constraintTop_toTopOf="@+id/weeklyIncomeText"
+        tools:layout_editor_absoluteY="80dp" />
 
 </android.support.constraint.ConstraintLayout>

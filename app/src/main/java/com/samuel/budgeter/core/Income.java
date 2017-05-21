@@ -1,4 +1,4 @@
-package com.samuel.budgeter;
+package com.samuel.budgeter.core;
 
 
 import org.joda.time.DateTime;
@@ -16,7 +16,7 @@ public class Income {
         return amount;
     }
 
-    public long getDateInMillisec() {
+    public long getDateInMillis() {
         return dateInMillisec;
     }
 }

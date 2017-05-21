@@ -1,4 +1,4 @@
-package com.samuel.budgeter;
+package com.samuel.budgeter.core;
 
 import android.util.Log;
 
@@ -11,16 +11,12 @@ import java.util.List;
 public class MonthlyBudget {
 
     private static MonthlyBudget currentMonth;
-    long startOfMonthInMillisec;
-    List<WeeklyBudget> weeklyBudgetList;
+    private long startOfMonthInMillis;
+    private List<WeeklyBudget> weeklyBudgetList;
 
-    public MonthlyBudget(long startOfMonthInMillisec) {
-        this.startOfMonthInMillisec = startOfMonthInMillisec;
-        DateTime startOfMonth = new DateTime(startOfMonthInMillisec);
-        if(currentMonth == null || startOfMonth.isAfter(new DateTime(currentMonth.startOfMonthInMillisec))) {
-            Log.d("Test", "hi");
-            currentMonth = this;
-        }
+    public MonthlyBudget(long startOfMonthInMillis) {
+        this.startOfMonthInMillis = startOfMonthInMillis;
+        DateTime startOfMonth = new DateTime(startOfMonthInMillis);
         weeklyBudgetList = new ArrayList<>();
         DateTime dateIterator = startOfMonth;
         DateTime endOfMonth = startOfMonth.dayOfMonth().withMaximumValue();
@@ -36,17 +32,18 @@ public class MonthlyBudget {
     }
 
     public void addExpense(Expense expense) {
-        getWeeklyBudget(expense.getDate()).addExpense(expense);
+        getWeekForDate(expense.getDate()).addExpense(expense);
     }
 
     public void addIncome(Income income) {
-        getWeeklyBudget(income.getDateInMillisec()).addIncome(income);
+        getWeekForDate(income.getDateInMillis()).addIncome(income);
     }
 
-    private WeeklyBudget getWeeklyBudget(long dateInMillisec) {
-        DateTime date = new DateTime(dateInMillisec);
+    public WeeklyBudget getWeekForDate(long dateInMillis) {
+        DateTime date = new DateTime(dateInMillis);
         for(int i = 1; i < weeklyBudgetList.size(); i++) {
             if(date.isBefore(weeklyBudgetList.get(i).getStartOfWeek())) {
+                Log.d("Before", date + " is before " + weeklyBudgetList.get(i).getStartOfWeek());
                 return weeklyBudgetList.get(i-1);
             }
         }
@@ -65,10 +62,14 @@ public class MonthlyBudget {
         return totalIncome;
     }
 
-    public boolean containsDate(long dateInMillisec) {
-        DateTime date = new DateTime(dateInMillisec);
-        DateTime startOfMonth = new DateTime(startOfMonthInMillisec);
+    public boolean containsDate(long dateInMillis) {
+        DateTime date = new DateTime(dateInMillis);
+        DateTime startOfMonth = new DateTime(startOfMonthInMillis);
         return (date.isAfter(startOfMonth) && date.isBefore(startOfMonth.plusMonths(1)));
+    }
+
+    public static void setCurrentMonth(MonthlyBudget month) {
+        currentMonth = month;
     }
 
     public static MonthlyBudget getCurrentMonth() {

@@ -1,6 +1,5 @@
-package com.samuel.budgeter;
+package com.samuel.budgeter.activity;
 
-import android.app.DatePickerDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
@@ -9,6 +8,12 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
+
+import com.samuel.budgeter.managers.BudgetManager;
+import com.samuel.budgeter.core.Expense;
+import com.samuel.budgeter.managers.FileManager;
+import com.samuel.budgeter.R;
+import com.samuel.budgeter.core.Utils;
 
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
@@ -46,8 +51,11 @@ public class newExpenseActivity extends AppCompatActivity {
                     toast.show();
                 } else {
                     Expense expense = new Expense(amount, date, details);
-                    BudgetManager.getInstance(context).addExpense(expense);
-                    startActivity(new Intent(newExpenseActivity.this, MainActivity.class));
+                    BudgetManager.getInstance().addExpense(expense);
+                    FileManager.getInstance().saveBudgetData(context);
+                    Toast toast = Toast.makeText(getApplicationContext(), "Added expense with amount $" + String.format("%.2f",amount) + ".", Toast.LENGTH_SHORT);
+                    toast.show();
+                    finish();
                 }
             }
         });
