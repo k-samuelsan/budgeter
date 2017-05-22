@@ -2,30 +2,36 @@ package com.samuel.budgeter.activity;
 
 import android.content.Context;
 import android.content.DialogInterface;
-import android.content.Intent;
 import android.graphics.Color;
+import android.graphics.Rect;
 import android.support.constraint.ConstraintLayout;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.InputType;
 import android.util.Log;
+import android.view.MotionEvent;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.FrameLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.samuel.budgeter.core.Transaction;
 import com.samuel.budgeter.managers.BudgetManager;
 import com.samuel.budgeter.managers.FileManager;
-import com.samuel.budgeter.core.Income;
 import com.samuel.budgeter.R;
 import com.samuel.budgeter.managers.UserDataManager;
 import com.samuel.budgeter.core.Utils;
 
 import org.joda.time.DateTime;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Calendar;
+import java.util.List;
 
 public class AddIncomeActivity extends AppCompatActivity {
     private final static String HOURLY = "Hourly";
@@ -70,6 +76,11 @@ public class AddIncomeActivity extends AppCompatActivity {
                 currentIncomeType = FLAT;
             }
         });
+
+        FrameLayout touchInterceptor = (FrameLayout)findViewById(R.id.touchInterceptor);
+        List<EditText> editTexts = new ArrayList<>();
+        editTexts.addAll(Arrays.asList(hoursWorkedInput, minutesWorkedInput, amountInput));
+        touchInterceptor.setOnTouchListener(Utils.getFocusClearer(editTexts));
 
         final AlertDialog.Builder alert = new AlertDialog.Builder(this);
         final Button changeHourlyRateBtn = (Button) findViewById(R.id.changeRateBtn);
@@ -146,7 +157,7 @@ public class AddIncomeActivity extends AppCompatActivity {
                     }
                     amount = Double.parseDouble(amountString);
                 }
-                BudgetManager.getInstance().addIncome(new Income(amount, date), context);
+                BudgetManager.getInstance().addTransaction(new Transaction(amount, date, ""), context);
                 Toast toast = Toast.makeText(getApplicationContext(), "Added income with amount $" + String.format("%.2f",amount) + ".", Toast.LENGTH_SHORT);
                 toast.show();
                 finish();

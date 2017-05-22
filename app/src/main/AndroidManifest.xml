@@ -20,7 +20,11 @@
             </intent-filter>
         </activity>
         <activity android:name=".activity.AddExpenseActivity" />
-        <activity android:name=".activity.AddIncomeActivity"></activity>
+        <activity android:name=".activity.AddIncomeActivity" />
+        <activity
+            android:name=".activity.ReportActivity"
+            android:label="@string/title_activity_report"
+            android:theme="@style/AppTheme.NoActionBar"></activity>
     </application>
 
 </manifest>

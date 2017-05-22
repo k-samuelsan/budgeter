@@ -3,4 +3,5 @@
     <string name="action_settings">Settings</string>
     <string name="monthly_income_string">This month\'s net income: </string>
     <string name="weekly_income_string">This week\'s net income: </string>
+    <string name="title_activity_report">ReportActivity</string>
 </resources>

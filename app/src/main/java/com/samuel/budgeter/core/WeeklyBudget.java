@@ -9,59 +9,36 @@ import java.util.List;
 
 public class WeeklyBudget {
     private DateTime startOfWeek;
-    private List<Expense> expenses;
-    private List<Income> incomeList;
+    private List<Transaction> transactions;
     private static WeeklyBudget currentWeek;
 
     WeeklyBudget(DateTime startOfWeek) {
         this.startOfWeek = startOfWeek;
-        expenses = new ArrayList<>();
-        incomeList = new ArrayList<>();
+        transactions = new ArrayList<>();
     }
 
-    void addExpense(Expense expense) {
-        expenses.add(expense);
-    }
-
-    void addIncome(Income income) {
-        Log.d("Income", "adding to week " + startOfWeek);
-        incomeList.add(income);
-        Log.d("Income", "amount " + income.getAmount());
+    void addTransaction(Transaction transaction) {
+        transactions.add(transaction);
     }
 
     public double getNetIncome() {
-//        Log.d("Income", "week " + startOfWeek);
-        double totalIncome = 0;
-        for(Income income: incomeList) {
-            totalIncome += income.getAmount();
+        double income = 0;
+        for(Transaction transaction: transactions) {
+            income += transaction.getAmount();
         }
-//        Log.d("Income", "total income " + totalIncome);
-        double totalExpenses = 0;
-        for(Expense expense: expenses) {
-            totalExpenses += expense.getAmount();
-        }
-//        Log.d("Income", "total expenses " + totalExpenses);
-//        Log.d("Income", "net " + (totalIncome - totalExpenses));
-        return totalIncome - totalExpenses;
+        return income;
     }
 
-    DateTime getStartOfWeek() {
+    public DateTime getStartOfWeek() {
         return startOfWeek;
     }
 
-    boolean hasExpenses() {
-        return expenses.size() > 0;
+    boolean hasTransactions() {
+        return transactions.size() > 0;
     }
 
-    boolean hasIncome() {
-        return incomeList.size() > 0;
-    }
-
-    List<Expense> getExpenses() {
-        return expenses;
-    }
-    List<Income> getIncome() {
-        return incomeList;
+    List<Transaction> getTransactions() {
+        return transactions;
     }
 
     public static void setCurrentWeek(WeeklyBudget week) {

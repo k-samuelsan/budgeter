@@ -30,14 +30,9 @@ public class MonthlyBudget {
         weeklyBudgetList.add(thisWeekBudget);
     }
 
-    public void addExpense(Expense expense) {
-        DateTime date = new DateTime(expense.getDateInMillis());
-        getWeekForDate(date).addExpense(expense);
-    }
-
-    public void addIncome(Income income) {
-        DateTime date = new DateTime(income.getDateInMillis());
-        getWeekForDate(date).addIncome(income);
+    public void addTransaction(Transaction transaction) {
+        DateTime date = new DateTime(transaction.getDateInMillis());
+        getWeekForDate(date).addTransaction(transaction);
     }
 
     public WeeklyBudget getWeekForDate(DateTime date) {
@@ -76,42 +71,23 @@ public class MonthlyBudget {
         return currentMonth;
     }
 
-    public List<Expense> getExpenses() {
-        List<Expense> budgets = new ArrayList<>();
+    public List<Transaction> getTransactions() {
+        List<Transaction> transactions = new ArrayList<>();
         for(WeeklyBudget weeklyBudget: weeklyBudgetList) {
-            if(weeklyBudget.hasExpenses()) {
-                budgets.addAll(weeklyBudget.getExpenses());
+            if(weeklyBudget.hasTransactions()) {
+                transactions.addAll(weeklyBudget.getTransactions());
             }
         }
-        return budgets;
-    }
-
-    public List<Income> getIncome() {
-        List<Income> incomeList = new ArrayList<>();
-        for(WeeklyBudget weeklyBudget: weeklyBudgetList) {
-            if(weeklyBudget.hasIncome()) {
-                incomeList.addAll(weeklyBudget.getIncome());
-            }
-        }
-        return incomeList;
+        return transactions;
     }
 
     DateTime getStartOfMonth() {
         return startOfMonth;
     }
 
-    boolean hasExpenses() {
+    boolean hasTransactions() {
         for(WeeklyBudget weeklyBudget: weeklyBudgetList) {
-            if(weeklyBudget.hasExpenses()) {
-                return true;
-            }
-        }
-        return false;
-    }
-
-    boolean hasIncome() {
-        for(WeeklyBudget weeklyBudget: weeklyBudgetList) {
-            if(weeklyBudget.hasIncome()) {
+            if(weeklyBudget.hasTransactions()) {
                 return true;
             }
         }

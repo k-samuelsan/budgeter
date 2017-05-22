@@ -22,14 +22,9 @@ public class YearlyBudget {
         }
     }
 
-    public void addExpense(Expense expense) {
-        DateTime date = new DateTime(expense.getDateInMillis());
-        getMonthForDate(date).addExpense(expense);
-    }
-
-    public void addIncome(Income income) {
-        DateTime date = new DateTime(income.getDateInMillis());
-        getMonthForDate(date).addIncome(income);
+    public void addTransaction(Transaction transaction) {
+        DateTime date = new DateTime(transaction.getDateInMillis());
+        getMonthForDate(date).addTransaction(transaction);
     }
 
     public MonthlyBudget getMonthForDate(DateTime date) {
@@ -68,24 +63,14 @@ public class YearlyBudget {
         return currentYear;
     }
 
-    public List<Expense> getExpenses() {
-        List<Expense> budgets = new ArrayList<>();
+    public List<Transaction> getTransactions() {
+        List<Transaction> budgets = new ArrayList<>();
         for(MonthlyBudget monthlyBudget: monthlyBudgetList) {
-            if(monthlyBudget.hasExpenses()) {
-                budgets.addAll(monthlyBudget.getExpenses());
+            if(monthlyBudget.hasTransactions()) {
+                budgets.addAll(monthlyBudget.getTransactions());
             }
         }
         return budgets;
-    }
-
-    public List<Income> getIncome() {
-        List<Income> incomeList = new ArrayList<>();
-        for(MonthlyBudget monthlyBudget: monthlyBudgetList) {
-            if(monthlyBudget.hasIncome()) {
-                incomeList.addAll(monthlyBudget.getIncome());
-            }
-        }
-        return incomeList;
     }
 
     public DateTime getStartOfYear() {

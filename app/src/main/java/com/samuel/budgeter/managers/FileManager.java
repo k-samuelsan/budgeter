@@ -5,8 +5,7 @@ import android.util.Log;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
-import com.samuel.budgeter.core.Expense;
-import com.samuel.budgeter.core.Income;
+import com.samuel.budgeter.core.Transaction;
 import com.samuel.budgeter.core.YearlyBudget;
 
 import org.joda.time.DateTime;
@@ -17,7 +16,6 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.InputStreamReader;
 import java.lang.reflect.Type;
-import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -54,11 +52,9 @@ public class FileManager {
         }
         try {
             long startOfYearInMillis = BudgetManager.getInstance().getStartOfLoadedYearInMillis();
-            List<Expense> expenses = BudgetManager.getInstance().getAllExpenses();
-            List<Income> incomeList = BudgetManager.getInstance().getAllIncome();
-            BudgetObject budgetObject = new BudgetObject(expenses, incomeList);
+            List<Transaction> transactions = BudgetManager.getInstance().getAllTransactions();
             final Gson gson = new Gson();
-            String jsonString = gson.toJson(budgetObject) + "\n";
+            String jsonString = gson.toJson(transactions) + "\n";
             Log.d("Test", "budget string : " + jsonString);
             Log.d("Test", "writing to file : " + budgetDataPrefix + startOfYearInMillis);
             FileOutputStream outputStream = context.openFileOutput(budgetDataPrefix + startOfYearInMillis, Context.MODE_PRIVATE);
@@ -139,29 +135,10 @@ public class FileManager {
             Log.d("File", "ERROR HERE.");
             e.printStackTrace();
         }
-        BudgetObject budgetObject = gson.fromJson(stringBuilder.toString(), BudgetObject.class);
-        int numExpenses = 0;
-        for(Expense expense: budgetObject.expenses) {
-            BudgetManager.getInstance().addExpense(expense, null);
-            numExpenses++;
-        }
-        Log.d("NUMBER", "numExpenses " + numExpenses);
-        int numIncome = 0;
-        for(Income income: budgetObject.incomeList) {
-            BudgetManager.getInstance().addIncome(income, null);
-            numIncome++;
-        }
-        Log.d("NUMBER", "numIncomes " + numIncome);
-        Log.d("NET" , "" + budgetObject.toString());
-    }
-
-    private class BudgetObject {
-        List<Expense> expenses;
-        List<Income> incomeList;
-
-        BudgetObject(List<Expense> expenses, List<Income> incomeList) {
-            this.expenses = expenses;
-            this.incomeList = incomeList;
+        Type listType = new TypeToken<List<Transaction>>() {}.getType();
+        List<Transaction> transactions = gson.fromJson(stringBuilder.toString(), listType);
+        for(Transaction transaction: transactions) {
+            BudgetManager.getInstance().addTransaction(transaction, null);
         }
     }
 
@@ -188,14 +165,10 @@ public class FileManager {
         } catch (Exception e) {
             e.printStackTrace();
         }
-        BudgetObject budgetObject = gson.fromJson(stringBuilder.toString(), BudgetObject.class);
-        if(budgetObject != null) {
-            for(Expense expense: budgetObject.expenses) {
-                BudgetManager.getInstance().addExpense(expense, null);
-            }
-            for(Income income: budgetObject.incomeList) {
-                BudgetManager.getInstance().addIncome(income, null);
-            }
+        Type listType = new TypeToken<List<Transaction>>() {}.getType();
+        List<Transaction> transactions = gson.fromJson(stringBuilder.toString(), listType);
+        for(Transaction transaction: transactions) {
+            BudgetManager.getInstance().addTransaction(transaction, null);
         }
     }
 }
